@@ -1,0 +1,17 @@
+version: '3'
+services:
+  postgresql:
+    container_name: Liferay-Postgresql
+    image: postgres
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Seoul
+      POSTGRES_DB: LIFERAY
+      POSTGRES_USER: khnam
+      POSTGRES_PASSWORD: khnam3377
+    volumes:
+      - postgresql:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+volumes:
+  postgresql:

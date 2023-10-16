@@ -1,0 +1,27 @@
+version: "3"
+networks:
+  net:
+volumes:
+  fonts:
+  configs:
+  elasticsearch:
+services:
+  elasticsearch:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: Liferay-Elasticsearch
+    restart: unless-stopped
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - discovery.type=single-node
+      - node.name=es-node1
+      - xpack.security.enabled=false
+      # - ELASTIC_ghktjddl9337=ghktjddl9337
+      - cluster.name=LiferayElasticsearchCluster
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+    networks:
+      - net

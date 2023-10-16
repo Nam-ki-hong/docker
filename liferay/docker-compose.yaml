@@ -1,0 +1,145 @@
+version: "3"
+networks:
+  net:
+volumes:
+  fonts:
+  configs:
+services:
+  liferay:
+    image: liferay/portal:7.4.3.93-ga93-d5.0.40-20230907144944
+    container_name: Liferay-Portal
+    # depends_on:
+    #   - postgresql
+    #   - elasticsearch
+    ports:
+      - 8088:8080
+      - 11311:11311
+    networks:
+      - net
+    restart: always
+    volumes:
+      - configs:/mnt/liferay
+      - fonts:/usr/share/fonts
+    environment:
+      JAVA_OPTS: "-Xmx2048m -Xms1024m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:SurvivorRatio=8 -XX:+TieredCompilation"
+      # 소규모: -Xmx 값이 1GB 미만일 경우.
+      # 중간 규모: -Xmx 값이 1GB에서 4GB 사이일 경우.
+      # 대규모: -Xmx 값이 4GB 이상일 경우.
+      ## 기본 도메인
+      LIFERAY_VIRTUAL_PERIOD_HOSTS_PERIOD_VALID_PERIOD_HOSTS: liferay.khland.page
+      ## 시간설정
+      LIFERAY_TIME_PERIOD_ZONES: Asia/Seoul
+      ## 제목
+      LIFERAY_PRODUCT_NAME: Liferay
+       ## 계정 설정
+      LIFERAY_COMPANY_PERIOD_DEFAULT_PERIOD_WEB_PERIOD_ID: khland.page
+      LIFERAY_ADMIN_PERIOD_EMAIL_PERIOD_FROM_PERIOD_ADDRESS: nkh7733@gmail.com
+      LIFERAY_DEFAULT_PERIOD_ADMIN_PERIOD_EMAIL_PERIOD_ADDRESS_PERIOD_PREFIX: Liferay
+      LIFERAY_ADMIN_PERIOD_EMAIL_PERIOD_FROM_PERIOD_NAME: "Liferay Administrator"
+      LIFERAY_LIVE_PERIOD_USERS_PERIOD_ENABLED: true
+      ## 기본패스워드
+      LIFERAY_DEFAULT_PERIOD_ADMIN_PERIOD_PASSWORD: khnam3377
+      # 스크린네임(ID, 한글안됌)
+      LIFERAY_DEFAULT_PERIOD_ADMIN_PERIOD_SCREEN_PERIOD_NAME: Liferay
+      LIFERAY_DEFAULT_PERIOD_ADMIN_PERIOD_FIRST_PERIOD_NAME: Liferay
+      LIFERAY_DEFAULT_PERIOD_ADMIN_PERIOD_LAST_PERIOD_NAME: Admin
+      ## 로그인타입(emailAddress, screenName, userId)
+      LIFERAY_COMPANY_PERIOD_SECURITY_PERIOD_AUTH_PERIOD_TYPE: emailAddress
+      ## DB설정
+      LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_DRIVER_UPPERCASEC_LASS_UPPERCASEN_AME: org.postgresql.Driver
+      LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL: jdbc:postgresql://10.10.31.94:5432/LIFERAY
+      LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_USERNAME: khnam
+      LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_PASSWORD: khnam3377
+      ##사용 조건 요구 사항은 포털 속성 설정값을 기반으로 한다.
+      LIFERAY_TERMS_PERIOD_OF_PERIOD_USE_PERIOD_REQUIRED: true
+      ## 초기데이터 입력
+      LIFERAY_SCHEMA_PERIOD_RUN_PERIOD_ENABLED: true
+      ## COMMERCE 비활성화
+      # LIFERAY_ENTERPRISE_PERIOD_PRODUCT_PERIOD_COMMERCE_PERIOD_ENABLED: false
+      ##스토리지 : 다음을 수행하는 클래스 이름을 설정하십시오
+      #LIFERAY_DL_PERIOD_STORE_PERIOD_IMPL: com.liferay.portal.store.cmis.CMISStore
+      # LIFERAY_DL_PERIOD_STORE_PERIOD_IMPL: com.liferay.portal.store.s3.S3Store
+      LIFERAY_DL_PERIOD_STORE_PERIOD_IMPL: com.liferay.portal.store.db.DBStore
+      # S3 설정을 완료하기 위해서는 설치된후 /WEB-INF/classes/system-ext.properties 파일을 만들고
+      # org.xml.sax.driver=com.sun.org.apache.xerces.internal.parsers.SAXParser 값을 추가 해야 한다. !!!!!!
+      ## Redirect.url.domains.allowed // 마켓 연결을 위한 허용 리다이렉트 도메인
+      LIFERAY_REDIRECT_PERIOD_URL_PERIOD_SECURITY_PERIOD_MODE: domain
+      LIFERAY_REDIRECT_PERIOD_URL_PERIOD_DOMAINS_PERIOD_ALLOWED: "*.khland.page"
+      ## Reverse Proxy 구성하기 위해서 반드시 필요함
+      LIFERAY_WEB_PERIOD_SERVER_PERIOD_PROTOCOL: https
+      LIFERAY_WEB_PERIOD_SERVER_PERIOD_HTTP_PERIOD_PORT: 80
+      LIFERAY_WEB_PERIOD_SERVER_PERIOD_HTTPS_PERIOD_PORT: 443
+      LIFERAY_WEB_PERIOD_SERVER_PERIOD_FORWARDED_PERIOD_HOST_PERIOD_ENABLED: true
+      # LIFERAY_WEB_PERIOD_SERVER_PERIOD_FORWARDED_PERIOD_HOST_PERIOD_HEADER: X-Forwarded-Host
+      LIFERAY_WEB_PERIOD_SERVER_PERIOD_FORWARDED_PERIOD_PORT_PERIOD_ENABLED: true
+      # LIFERAY_WEB_PERIOD_SERVER_PERIOD_FORWARDED_PERIOD_PORT_PERIOD_HEADER: X-Forwarded-Port
+      LIFERAY_WEB_PERIOD_SERVER_PERIOD_FORWARDED_PERIOD_PROTOCOL_PERIOD_ENABLED: true
+      # LIFERAY_WEB_PERIOD_SERVER_PERIOD_FORWARDED_PERIOD_PROTOCOL_PERIOD_HEADER: X-Forwarded-Proto
+      ## 메일설정(Java Mail 세션을 작성하는 데 사용되는 특성을 설정)
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL: true
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_POP_NUMBER3__PERIOD_HOST:
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_POP_NUMBER3__PERIOD_PASSWORD:
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_POP_NUMBER3__PERIOD_PORT:
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_POP_NUMBER3__PERIOD_USER:
+      # #
+      ## Session Time
+      # -session.timeout=60
+      LIFERAY_SESSION_PERIOD_TIMEOUT: 150
+      # -경보
+      LIFERAY_SESSION_PERIOD_TIMEOUT_PERIOD_WARNING: 1
+      # -auto-extend mode
+      LIFERAY_SESSION_PERIOD_TIMEOUT_PERIOD_AUTO_PERIOD_EXTEND: true
+      # 세션 공유(SSO)
+      # LIFERAY_SESSION_PERIOD_COOKIE_PERIOD_USE_PERIOD_FULL_PERIOD_HOSTNAME: true
+      # LIFERAY_SESSION_PERIOD_COOKIE_PERIOD_USE_PERIOD_FULL_PERIOD_HOSTNAME_OPENBRACKET_TOMCAT_CLOSEBRACKET_: true
+      ###############  Mail Config  ##################################################
+      #LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL: false
+      #pop3
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_POP_NUMBER3__PERIOD_PORT: 110
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_POP_NUMBER3__PERIOD_HOST: pop.triangles.net
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_POP_NUMBER3__PERIOD_USER: liferay@triangles.net
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_POP_NUMBER3__PERIOD_PASSWORD: ghktjddl9337
+      # #IMAP
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_IMAP__PERIOD_PORT: 143
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_IMAP__PERIOD_HOST: imap.triangles.net
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_IMAP__PERIOD_USER: liferay@triangles.net
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_IMAP__PERIOD_PASSWORD: ghktjddl9337
+      # #SMTP
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_SMTP_PERIOD_AUTH: true
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_SMTP_PERIOD_PORT: 25
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_SMTP_PERIOD_HOST: smtp.triangles.net
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_SMTP_PERIOD_USER: liferay@triangles.net
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_SMTP_PERIOD_PASSWORD: ghktjddl9337
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_SMTP_PERIOD_STARTTLS_PERIOD_ENABLE: false
+      #LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_STORE_PERIOD_PROTOCOL: imap
+      #LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_TRANSPORT_PERIOD_PROTOCOL: smtp
+     #mail.session.mail=false
+     ##mail.session.mail.pop3.host=localhost
+     ##mail.session.mail.pop3.password=
+     ##mail.session.mail.pop3.port=110
+     ##mail.session.mail.pop3.user=
+     ##mail.session.mail.smtp.auth=false
+     ##mail.session.mail.smtp.host=localhost
+     ##mail.session.mail.smtp.password=
+     ##mail.session.mail.smtp.port=25
+     ##mail.session.mail.smtp.starttls.enable=true
+     ##mail.session.mail.smtp.user=
+     ##mail.session.mail.store.protocol=pop3
+     ##mail.session.mail.transport.protocol=smtp
+     #
+     #
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_SMTP_PERIOD_STARTTLS_PERIOD_ENABLE: false
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_SMTP_PERIOD_AUTH: true
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_SMTP_PERIOD_PORT: 25
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_SMTP_PERIOD_HOST: smtp.triangles.com
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_SMTP_PERIOD_USER: liferay@triangles.com
+      # LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_SMTP_PERIOD_PASSWORD: ghktjddl9337
+     #LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_STORE_PERIOD_PROTOCOL: pop3
+     #LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_TRANSPORT_PERIOD_PROTOCOL: smtp
+      ## 알림메일 발신자 정보
+      LIFERAY_ANNOUNCEMENTS_PERIOD_EMAIL_PERIOD_FROM_PERIOD_ADDRESS: nkh7733@gmail.com
+      LIFERAY_ANNOUNCEMENTS_PERIOD_EMAIL_PERIOD_FROM_PERIOD_NAME: 관리자
+      ## CMIS 연결 기능
+      #LIFERAY_SESSION_PERIOD_STORE_PERIOD_PASSWORD: true
+      ## Display of live session
+      # LIFERAY_LIVE_PERIOD_USERS_PERIOD_ENABLED: true

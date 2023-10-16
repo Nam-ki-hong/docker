@@ -1,0 +1,19 @@
+version: '3'
+services:
+  pgadmin4:
+    image: dpage/pgadmin4:latest
+    container_name: Pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: nkh7733@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: khnam3377
+    ports:
+      - "5433:80"
+    networks:
+      - net
+    volumes:
+      - data:/var/lib/pgadmin
+    restart: unless-stopped
+volumes:
+  data:
+networks:
+  net:
